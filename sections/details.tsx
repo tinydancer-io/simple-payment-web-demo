@@ -22,6 +22,7 @@ import {
   Transaction,
 } from "@solana/web3.js";
 import axios from "axios";
+import base58 from "bs58";
 import Confirm from "./confirm";
 
 const Details = ({ conf1, setConf1 }: any) => {
@@ -48,14 +49,20 @@ const Details = ({ conf1, setConf1 }: any) => {
     transferTransaction.feePayer = publicKey!;
     if (connected && signTransaction) {
       const txn = await signTransaction(transferTransaction);
-      const signature = await connection.sendRawTransaction(txn.serialize());
-      console.log("signature", signature);
+      const sendTxnPayload = {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "sendTransaction",
+        params: [base58.encode(txn.serialize())],
+      };
+      const { data } = await axios.post("http://0.0.0.0:8890", sendTxnPayload);
+      console.log("signature", data);
       let res = await axios.post("http://0.0.0.0:8890", {
         jsonrpc: "2.0",
         id: 1,
         method: "getSignatureStatuses",
         params: [
-          [signature],
+          [data.result],
           {
             searchTransactionHistory: true,
           },

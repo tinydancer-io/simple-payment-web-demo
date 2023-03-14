@@ -117,7 +117,7 @@ const Cart = ({ conf1, setConf1 }: any) => {
           </HStack>
           <HStack justifyContent="space-between">
             <Text color={secondaryTextColor}>Taxes (estimated)</Text>
-            <Heading size="sm">Ⓞ 0.1</Heading>
+            <Heading size="sm">Ⓞ 0</Heading>
           </HStack>
         </VStack>
         <Divider />
