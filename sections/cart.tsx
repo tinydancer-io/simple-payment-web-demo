@@ -21,16 +21,20 @@ import {
   Transaction,
 } from "@solana/web3.js";
 // import { connect } from "http2";
-import React from "react";
+import React, { useEffect } from "react";
 import { ConnectWallet } from "./ct";
 
 const Cart = ({ conf1, setConf1 }: any) => {
   const { toggleColorMode } = useColorMode();
-  const [address, setAddress] = React.useState("");
-  const { connect, connected, publicKey, signTransaction } = useWallet();
+  const { connect, connected, publicKey, disconnect, signTransaction } =
+    useWallet();
+  const [address, setAddress] = React.useState(publicKey?.toBase58() || "");
+  console.log(connected, publicKey?.toBase58());
   const bgColor = useColorModeValue("gray.50", "whiteAlpha.50");
   const secondaryTextColor = useColorModeValue("gray.600", "gray.400");
-
+  useEffect(() => {
+    disconnect();
+  }, []);
   return (
     <>
       <Button
@@ -54,11 +58,12 @@ const Cart = ({ conf1, setConf1 }: any) => {
         }
       >
         <ConnectWallet setAddress={setAddress} noToast={false}>
-          {(address.length > 0 &&
-            address.substring(0, 5) +
-              "..." +
-              address.substring(35, address.length - 5)) ||
-            "Connect Wallet"}
+          {connected
+            ? address.length > 0 &&
+              address.substring(0, 5) +
+                "..." +
+                address.substring(35, address.length - 5)
+            : "Connect Wallet"}
         </ConnectWallet>
       </Button>
       <VStack
@@ -102,14 +107,14 @@ const Cart = ({ conf1, setConf1 }: any) => {
               <Text color={secondaryTextColor}>#1</Text>
             </VStack>
             <Heading size="sm" textAlign="end">
-              Ⓞ0.1
+              Ⓞ69
             </Heading>
           </Stack>
         </HStack>
         <VStack spacing={4} alignItems="stretch" w="full">
           <HStack justifyContent="space-between">
             <Text color={secondaryTextColor}>Subtotal</Text>
-            <Heading size="sm">Ⓞ 0.1</Heading>
+            <Heading size="sm">Ⓞ 69</Heading>
           </HStack>
           <HStack justifyContent="space-between">
             <Text color={secondaryTextColor}>Shipping</Text>
@@ -123,7 +128,7 @@ const Cart = ({ conf1, setConf1 }: any) => {
         <Divider />
         <HStack justifyContent="space-between" w="full">
           <Text color={secondaryTextColor}>Total</Text>
-          <Heading size="lg">Ⓞ 0.1</Heading>
+          <Heading size="lg">Ⓞ 69</Heading>
         </HStack>
       </VStack>
     </>

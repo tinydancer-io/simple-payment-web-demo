@@ -3,7 +3,7 @@ import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
+declare const window: any;
 export const ConnectWallet = ({
   children,
   redirectToWelcome,
@@ -62,6 +62,8 @@ export const ConnectWallet = ({
 
       //   if (setWalletType) setWalletType("sol");
       //   onClose();
+    } else {
+      console.log("no public key");
     }
   }, [SolanaWallet, visible, publicKey, redirectToWelcome, clicked, fire]);
 
@@ -69,7 +71,8 @@ export const ConnectWallet = ({
     setClicked(true);
     if (SolanaWallet) {
       toast.loading("disconnecting...", { id: "dis" });
-      await SolanaWallet.adapter.disconnect();
+      SolanaWallet.adapter.disconnect();
+      window.solana.disconnect();
       setAddress("");
       toast.success("disconnected", { id: "dis" });
       return;

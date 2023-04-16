@@ -16,7 +16,13 @@ function Confirm({ isOpen, onOpen, onClose, conf1, setConf1 }: any) {
     <>
       {/* <Button onClick={onOpen}>Open Modal</Button> */}
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          setConf1(false);
+          onClose();
+        }}
+      >
         <ModalOverlay />
         <ModalContent>
           {/* <ModalHeader textAlign="center">Waiting for confirmation</ModalHeader> */}

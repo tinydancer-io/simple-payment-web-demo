@@ -48,36 +48,44 @@ const Details = ({ conf1, setConf1 }: any) => {
     transferTransaction.recentBlockhash = blockhash;
     transferTransaction.feePayer = publicKey!;
     if (connected && signTransaction) {
-      const txn = await signTransaction(transferTransaction);
-      const sendTxnPayload = {
-        jsonrpc: "2.0",
-        id: 1,
-        method: "sendTransaction",
-        params: [base58.encode(txn.serialize())],
-      };
-      const { data } = await axios.post("http://0.0.0.0:8890", sendTxnPayload);
-      console.log("signature", data);
-      let res = await axios.post("http://0.0.0.0:8890", {
-        jsonrpc: "2.0",
-        id: 1,
-        method: "getSignatureStatuses",
-        params: [
-          [data.result],
-          {
-            searchTransactionHistory: true,
-          },
-        ],
-      });
-      console.log("res", res.data);
-      //   res.value.map((v) => {
-      //     if (v) {
-      //       v.confirmationStatus === "confirmed" && setConf1(true);
-      //     }
-      //   });
-      //@ts-ignore
-      if (res.data.result.context.sampled === false)
-        alert("dont trust confirmation");
-      setConf1(true);
+      try {
+        const txn = await signTransaction(transferTransaction);
+        const sendTxnPayload = {
+          jsonrpc: "2.0",
+          id: 1,
+          method: "sendTransaction",
+          params: [base58.encode(txn.serialize())],
+        };
+        console.log("sending txn");
+        const { data } = await axios.post(
+          "http://0.0.0.0:8890",
+          sendTxnPayload
+        );
+        console.log("signature", data);
+        let res = await axios.post("http://0.0.0.0:8890", {
+          jsonrpc: "2.0",
+          id: 1,
+          method: "getSignatureStatuses",
+          params: [
+            [data.result],
+            {
+              searchTransactionHistory: true,
+            },
+          ],
+        });
+        console.log("res", res.data);
+        //   res.value.map((v) => {
+        //     if (v) {
+        //       v.confirmationStatus === "confirmed" && setConf1(true);
+        //     }
+        //   });
+        //@ts-ignore
+        if (res.data.result.context.sampled === false)
+          alert("dont trust confirmation");
+        setConf1(true);
+      } catch (error) {
+        console.log("error", (error as Error).message);
+      }
     }
   };
   return (
